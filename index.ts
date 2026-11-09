@@ -13,9 +13,8 @@ export function catsay(text: string): string {
 
   // Left half of the sprite (19 chars per row, last char = center column).
   // The right half is mirrored automatically, so every row is 37 pixels wide.
-  // . = transparent
   const HALF_MAP = [
-    '..........OOOO.....', // 0  ear tips
+    '..........OOOO.....',
     '.........OSSSO.....',
     '........OSSSSO.....',
     '........OSSSSO.....',
@@ -24,36 +23,36 @@ export function catsay(text: string): string {
     '.......OGGGGGO.....',
     '.......OGGGGGO.....',
     '.......OGGGGGO.....',
-    '.......OGGGGGOOOOOO', // 9  line between the ears
-    '......OGGGGGGGGGGGG', // 10 head
+    '.......OGGGGGOOOOOO',
+    '......OGGGGGGGGGGGG',
     '.....OGGGGGGGGGGGGG',
-    '...SSOGGGGGGGGGGGGG', // 12 whisker
+    '...SSOGGGGGGGGGGGGG',
     '.....OGGGGGGGGGGGGG',
-    '..SSSOGGGGGGGGGGGGG', // 14 whisker
-    '....OGGGGGWWWWGGGGG', // 15 eyes
-    '..SSOGGGGGWOOWGGGGG', // 16 whisker + eyes
-    '....OGGGGGWOOWGGGGO', // 17 eyes + nose
-    '....OGGGGGWWWWGGGGG', // 18 eyes
-    '...OGGGGGGGGGGGGGGG', // 19 body
-    '...OGGGGGGCCCCCCCCC', // 20 belly starts
+    '..SSSOGGGGGGGGGGGGG',
+    '....OGGGGGWWWWGGGGG',
+    '..SSOGGGGGWOOWGGGGG',
+    '....OGGGGGWOOWGGGGO',
+    '....OGGGGGWWWWGGGGG',
+    '...OGGGGGGGGGGGGGGG',
+    '...OGGGGGGCCCCCCCCC',
     '...OGGGGGCCCCCCCCCC',
     '...OGGGGCCCCCCCCCCC',
-    '...OGGGCCCCCCOCCCCO', // 23 belly marks
+    '...OGGGCCCCCCOCCCCO',
     '...OGGGCCCCCOCOCCOC',
     '...OGGGCCCCCCCCCCCC',
-    '.OOOSSSCCCOCCCCOCCC', // 26 arm + belly marks
+    '.OOOSSSCCCOCCCCOCCC',
     '.OSOSSSCCOCOCCOCOCC',
     '.OSOSSSCCCCCCCCCCCC',
     '.OSOSSSCCCCCCCCCCCC',
     '.OSOSSSCCCCCCCCCCCC',
     '.OOOSSSCCCCCCCCCCCC',
     '...OSSSCCCCCCCCCCCC',
-    '...OSSSTTTTTTTTTTTT', // 33 tan stripe
+    '...OSSSTTTTTTTTTTTT',
     '...OSSSTTTTTTTTTTTT',
     '...OSSSSCCCCCCCCCCC',
-    '....OSSSOOOOOOOOOOO', // 36 bottom outline
-    '........OSSSSSO....', // 37 feet
-    '........OOOOOOO....', // 38
+    '....OSSSOOOOOOOOOOO',
+    '........OSSSSSO....',
+    '........OOOOOOO....',
   ];
 
   const mirror = (half: string): string =>
@@ -77,22 +76,10 @@ export function catsay(text: string): string {
 
   // Render two vertical pixels into one terminal character
   const renderPixels = (top: string, bottom: string): string => {
-    if (top === '.' && bottom === '.') {
-      return ' ';
-    }
-
-    if (top === '.') {
-      return `${color(bottom)}▄${RESET}`;
-    }
-
-    if (bottom === '.') {
-      return `${color(top)}▀${RESET}`;
-    }
-
-    if (top === bottom) {
-      return `${color(top)}█${RESET}`;
-    }
-
+    if (top === '.' && bottom === '.') return ' ';
+    if (top === '.') return `${color(bottom)}▄${RESET}`;
+    if (bottom === '.') return `${color(top)}▀${RESET}`;
+    if (top === bottom) return `${color(top)}█${RESET}`;
     return `${color(top)}${color(bottom, true)}▀${RESET}`;
   };
 
@@ -105,19 +92,17 @@ export function catsay(text: string): string {
       const bottom = (PIXEL_MAP[y + 1] ?? '').padEnd(WIDTH, '.');
 
       let line = '';
-
       for (let x = 0; x < WIDTH; x++) {
         line += renderPixels(top[x], bottom[x]);
       }
-
       output.push(line);
     }
 
     return output.join('\n');
   };
 
-  // Speech bubble
-  const CONTENT_WIDTH = WIDTH - 4;
+  // ───────────── Cute speech bubble (changed section) ─────────────
+  const CONTENT_WIDTH = WIDTH - 8;
 
   const wrapText = (value: string): string[] => {
     return value.split('\n').flatMap(paragraph => {
@@ -140,7 +125,6 @@ export function catsay(text: string): string {
             result.push(current);
             current = '';
           }
-
           result.push(remaining.slice(0, CONTENT_WIDTH));
           remaining = remaining.slice(CONTENT_WIDTH);
         }
@@ -151,34 +135,62 @@ export function catsay(text: string): string {
       }
 
       if (current) result.push(current);
-
       return result;
     });
   };
 
   const lines = wrapText(text);
 
-  const bubbleWidth = Math.min(
+  // Bubble width is kept the same parity as the sprite so the tail
+  // lands exactly on Totoro's center column.
+  let bubbleWidth = Math.min(
     WIDTH,
-    Math.max(20, ...lines.map(line => line.length + 4))
+    Math.max(25, ...lines.map(line => line.length + 8))
   );
+  if ((bubbleWidth - WIDTH) % 2 !== 0) bubbleWidth += 1;
+  bubbleWidth = Math.min(bubbleWidth, WIDTH);
 
-  const center = (value: string): string => {
-    const left = Math.max(0, Math.floor((WIDTH - value.length) / 2));
-    return ' '.repeat(left) + value;
+  const inner = bubbleWidth - 2;
+  const bubbleLeft = Math.floor((WIDTH - bubbleWidth) / 2);
+  const pad = ' '.repeat(bubbleLeft);
+
+  const BORDER = color('O'); // soft purple outline
+  const FILL = color('C', true); // cream fill, same as the belly
+  const TEXT = color('O'); // text matches the outline
+  const HEART = '\x1b[38;2;240;150;170m'; // pink heart
+  const SPARK = color('T'); // tan sparkle
+
+  // Center text inside the bubble
+  const centerIn = (value: string, width: number): string => {
+    const total = Math.max(0, width - value.length);
+    const left = Math.floor(total / 2);
+    return ' '.repeat(left) + value + ' '.repeat(total - left);
   };
 
-  const bubbleColor = '\x1b[38;2;105;88;100m';
+  // Top border with tiny decorations:  ╭─ ♡ ────── ✦ ─╮
+  const topFill = '─'.repeat(inner - 8);
+  const top =
+    `${BORDER}╭─ ${HEART}♡${BORDER} ${topFill} ${SPARK}✦${BORDER} ─╮${RESET}`;
 
-  const bubble = [
-    `╭${'─'.repeat(bubbleWidth - 2)}╮`,
-    ...lines.map(line => `│ ${line.padEnd(bubbleWidth - 4)} │`),
-    `╰${'─'.repeat(bubbleWidth - 2)}╯`,
-  ]
-    .map(line => `${bubbleColor}${center(line)}${RESET}`)
+  // Text rows with cream background
+  const body = lines.map(line =>
+    `${BORDER}│${FILL}${TEXT}${centerIn(line, inner)}${RESET}${BORDER}│${RESET}`
+  );
+
+  // Soft empty rows above/below the text so it breathes
+  const emptyRow = `${BORDER}│${FILL}${' '.repeat(inner)}${RESET}${BORDER}│${RESET}`;
+
+  // Bottom border with the tail notch in the center
+  const sideFill = '─'.repeat((inner - 1) / 2);
+  const bottom = `${BORDER}╰${sideFill}┬${sideFill}╯${RESET}`;
+
+  // Little tail pointing down at Totoro's head
+  const tail = ' '.repeat(bubbleLeft + 1 + (inner - 1) / 2) +
+    `${BORDER}▼${RESET}`;
+
+  const bubble = [top, emptyRow, ...body, emptyRow, bottom]
+    .map(line => pad + line)
     .join('\n');
-
-  const tail = `${bubbleColor}${center('╲')}${RESET}`;
 
   return [bubble, tail, renderTotoro()].join('\n');
 }

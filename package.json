@@ -1,7 +1,7 @@
 {
-  "name": "catsay",
+  "name": "totorosay",
   "version": "1.0.0",
-  "description": "Make Bongo Cat say anything in your terminal with dynamic mood bubbles",
+  "description": "Make Totoro say anything in your terminal",
   "type": "module",
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
