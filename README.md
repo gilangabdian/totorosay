@@ -12,14 +12,19 @@ Without needing to install:
 npx totorosay "Hello, World!"
 ```
 
-Or
+Or install globally:
 
 ```bash
-npm i totorosay
+npm i -g totorosay
 totorosay "Hello, World!"
 ```
 
 Or use it as dependency:
+
+```bash
+npm i totorosay
+```
+Use it in your code
 
 ```ts
 // app.js
