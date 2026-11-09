@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Make Bongo Cat say anything in your terminal with dynamic mood bubbles",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "bin": {
-    "catsay": "./dist/cli.js"
+    "catsay": "./dist/cli.mjs"
   },
   "files": [
     "dist"
