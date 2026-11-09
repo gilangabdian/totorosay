@@ -1,0 +1,25 @@
+{
+  "name": "catsay",
+  "version": "1.0.0",
+  "description": "Make Bongo Cat say anything in your terminal with dynamic mood bubbles",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "catsay": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown index.ts cli.ts --format esm --dts --minify",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "tsdown": "^1.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  }
+}
