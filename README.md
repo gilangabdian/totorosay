@@ -1,4 +1,5 @@
 # totorosay
+<img src="./assets/totoro.png"/>
 
 Inspired by cowsay, but the character for this is Totoro. Make Totoro say anything in your CLI
 
@@ -17,16 +18,13 @@ totorosay "Hello, World!"
 ```
 
 
-
-
-
 ## Usage
 ```ts
 // app.js
 import {totorosay} from 'totorosay';
 
 console.log(totorosay('Hello, World!'))
-// and then run with node app.js
+// and then run with: node app.js
 ```
 
 
