@@ -1,16 +1,37 @@
 import { describe, it, expect } from 'vitest';
-import { catsay } from './index.js';
+import { totorosay } from './index.js';
 
-describe('catsay() core library', () => {
-  it('must return bubble box with teks default', () => {
-    const result = catsay('Meow');
-    expect(result).toContain('| Meow |');
-    expect(result).toContain('▪ ▪');
+describe('totorosay() core library', () => {
+  it('renders speech bubble with text, cute decorations, and Totoro sprite', () => {
+    const result = totorosay('Meow');
+
+    // Contains text inside speech bubble
+    expect(result).toContain('Meow');
+
+    // Contains heart and spark decorations
+    expect(result).toContain('♡');
+    expect(result).toContain('✦');
+
+    // Contains bubble tail pointing down
+    expect(result).toContain('▼');
+
+    // Contains half-block ANSI pixel art characters
+    expect(result).toContain('▄');
+    expect(result).toContain('▀');
   });
 
-  it('must change the expression of the balloon and eyes when detecting an exclamation mark (!)', () => {
-    const result = catsay('Bongo Cat!');
-    expect(result).toContain('[ Bongo Cat! ]');
-    expect(result).toContain('O O');
+  it('handles multi-line and long text with automatic wrapping', () => {
+    const longMessage =
+      'This is a long sentence that should wrap automatically across multiple lines inside Totoro speech bubble.';
+    const result = totorosay(longMessage);
+
+    expect(result).toContain('This is a long');
+    expect(result).toContain('▼');
+  });
+
+  it('safely handles empty or falsy inputs', () => {
+    const result = totorosay('');
+    expect(result).toContain('♡');
+    expect(result).toContain('▼');
   });
 });
