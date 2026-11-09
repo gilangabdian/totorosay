@@ -1,22 +1,22 @@
 const RESET = '\x1b[0m';
 
-// Totoro pixel-art color palette
+// Totoro pixel-art color palette matching reference image
 const COLORS: Record<string, [number, number, number]> = {
-  O: [105, 88, 100],
-  S: [150, 138, 148],
-  G: [176, 165, 175],
-  C: [252, 246, 214],
-  T: [238, 218, 160],
-  W: [255, 255, 255],
+  O: [111, 93, 102],   // Dark outline, nose, eyes
+  S: [174, 163, 163],  // Darker gray (ears tip, whiskers, arms, feet, belly chevrons)
+  G: [192, 181, 185],  // Main gray body
+  C: [253, 246, 219],  // Cream belly
+  T: [239, 221, 198],  // Tan belly stripe
+  W: [255, 255, 255],  // White eyes
 };
 
-// RLE compressed half-map (19 chars per row, 39 rows)
+// RLE compressed half-map (21 chars per row, 47 rows, mirrored horizontally to 41 px)
 const RLE_MAP =
-  '10.4O14.O3SO13.O4SO13.O4SO12.O5SO12.O5SO12.O5GO12.O5GO12.O5GO12.O5G6O6.O12G5.O13G3.2SO13G5.O13G2.3SO13G4.O5G4W5G2.2SO5GW2OW5G4.O5GW2OW4GO4.O5G4W5G3.O15G3.O6G9C3.O5G10C3.O4G11C3.O3G6CO4CO3.O3G5COCO2COC3.O3G12C.3O3S3CO4CO3C.OSO3S2COCO2COCO2C.OSO3S12C.OSO3S12C.OSO3S12C.3O3S12C3.O3S12C3.O3S12T3.O3S12T3.O4S11C4.O3S11O8.O5SO12.7O4.';
+  '11.3O17.O3SO15.O4SO14.O5SO14.O5SO14.O5SO14.O5GO14.O5GO13.O6GO13.O6GO13.O5G8O7.O13G7.O13G7.O13G7.O13G2.4S.O13G6.SO13G6.O14G2.4SO4G4W6G5.SO3GW3OW6G5.O4GW3OW3G3O3.2O5GW3OW5GO2.O.O6G4W6G4.O16G4.O9G7C4.O7G9C3.O7G10C3.O6G4CS5CS2.SO6G3CSCS3CSC2.O6G12C2.O6G2CS9C.OGO5GCSCS4CS3C.OGO4G8CSCS2C.OGO4G13CO2SO4S13CO2SO4S13CO2SO4S13C.7S13C2.O5S13C3.5S13T3.O4S13T4.O4S12C5.O3S12C6.O4S10T7.14O9.O3SO17.3O8.';
 
-const HALF_ROWS = RLE_MAP.replace(/(\d+)(.)/g, (_, n, c) => c.repeat(+n)).match(/.{19}/g)!;
+const HALF_ROWS = RLE_MAP.replace(/(\d+)(.)/g, (_, n, c) => c.repeat(+n)).match(/.{21}/g)!;
 const PIXEL_MAP = HALF_ROWS.map(half => half + half.slice(0, -1).split('').reverse().join(''));
-const WIDTH = 37;
+const WIDTH = 41;
 
 const color = (key: string, background = false): string => {
   const rgb = COLORS[key];

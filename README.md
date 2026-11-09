@@ -12,7 +12,7 @@ npx totorosay "Hello, World!"
 Or
 
 ```bash
-npm install totorosay
+npm i totorosay
 totorosay "Hello, World!"
 ```
 
