@@ -1,7 +1,7 @@
 # totorosay
-[![NPM Version](https://img.shields.io/npm/v/totorosay?color=black
-)](https://www.npmjs.com/package/totorosay)
-<img src="./assets/totoro.png"/>
+[![NPM Version](https://img.shields.io/npm/v/totorosay?color=black)](https://www.npmjs.com/package/totorosay)
+
+![totoro](./assets/totoro.png)
 
 Inspired by cowsay, but the character for this is Totoro. Make Totoro say anything in your CLI
 
