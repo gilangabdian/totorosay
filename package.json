@@ -1,6 +1,6 @@
 {
   "name": "totorosay",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Make Totoro say anything in your terminal",
   "type": "module",
   "main": "./dist/index.mjs",
